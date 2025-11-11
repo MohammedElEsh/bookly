@@ -21,9 +21,7 @@ class BookDetailsSection extends StatelessWidget {
         const SizedBox(height: 43),
         Text(
           'The Jingle Book',
-          style: Styles.textStyle30.copyWith(
-            fontWeight: FontWeight.bold,
-          ),
+          style: Styles.textStyle30.copyWith(fontWeight: FontWeight.bold),
           textAlign: TextAlign.center,
         ),
         const SizedBox(height: 6),
@@ -39,17 +37,11 @@ class BookDetailsSection extends StatelessWidget {
           ),
         ),
         const SizedBox(height: 18),
-        const BookRating(
-          mainAxisAlignment: MainAxisAlignment.center,
-        ),
-
+        const BookRating(mainAxisAlignment: MainAxisAlignment.center),
 
         const SizedBox(height: 40),
         const BooksAction(),
-
       ],
     );
   }
 }
-
-

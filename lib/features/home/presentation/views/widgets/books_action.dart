@@ -7,8 +7,7 @@ class BooksAction extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(
-          horizontal: 8.0),
+      padding: const EdgeInsets.symmetric(horizontal: 8.0),
       child: Row(
         children: [
           Expanded(
@@ -23,7 +22,6 @@ class BooksAction extends StatelessWidget {
             ),
           ),
 
-
           Expanded(
             child: CustomButton(
               text: 'Free preview',
@@ -35,7 +33,6 @@ class BooksAction extends StatelessWidget {
               ),
             ),
           ),
-
         ],
       ),
     );

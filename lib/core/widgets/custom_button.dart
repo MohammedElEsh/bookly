@@ -10,7 +10,6 @@ class CustomButton extends StatelessWidget {
     this.borderRadius,
   });
 
-
   final Color backgroundColor;
   final Color textColor;
   final BorderRadius? borderRadius;

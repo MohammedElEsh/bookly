@@ -16,17 +16,13 @@ class _SplashViewBodyState extends State<SplashViewBody>
   late AnimationController animationController;
   late Animation<Offset> slidingAnimation;
 
-
-
   @override
   void initState() {
     super.initState();
 
     initSlidingAnimation();
     navigateToHome();
-
   }
-
 
   void initSlidingAnimation() {
     animationController = AnimationController(
@@ -43,21 +39,11 @@ class _SplashViewBodyState extends State<SplashViewBody>
   }
 
   void navigateToHome() {
-
     Future.delayed(const Duration(seconds: 3), () {
-
-
+      // ignore: use_build_context_synchronously
       GoRouter.of(context).push(AppRouter.kHomeView);
-
-
-
-
-      },
-    );
+    });
   }
-
-
-
 
   @override
   void dispose() {

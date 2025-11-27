@@ -21,15 +21,15 @@ class BookModel extends BookEntity {
     this.saleInfo,
     this.accessInfo,
   }) : super(
-    bookId: id ?? '',
-    title: volumeInfo?.title ?? 'Unknown Title',
-    image: volumeInfo?.imageLinks?.thumbnail ?? '',
-    authorName: volumeInfo?.authors?.isNotEmpty == true
-        ? volumeInfo!.authors?.first
-        : 'Unknown Author',
-    price: 0.0,
-    rating: volumeInfo?.averageRating ?? 0.0,
-  );
+         bookId: id ?? '',
+         title: volumeInfo?.title ?? 'Unknown Title',
+         image: volumeInfo?.imageLinks?.thumbnail ?? '',
+         authorName: volumeInfo?.authors?.isNotEmpty == true
+             ? volumeInfo!.authors?.first
+             : 'Unknown Author',
+         price: 0.0,
+         rating: volumeInfo?.averageRating ?? 0.0,
+       );
 
   factory BookModel.fromJson(Map<String, dynamic> json) => BookModel(
     kind: json['kind'] as String?,

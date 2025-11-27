@@ -12,10 +12,11 @@ class SimilarBooksListView extends StatelessWidget {
 
       child: ListView.builder(
         scrollDirection: Axis.horizontal,
+        // itemCount: 10,
         itemBuilder: (context, index) {
           return const Padding(
             padding: EdgeInsets.only(left: 18),
-            child: FeaturedListViewItem(),
+            child: FeaturedListViewItem(image: ''),
           );
         },
       ),

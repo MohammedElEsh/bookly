@@ -15,21 +15,31 @@ class HomeRepoImpl extends HomeRepo {
     required this.homeLocalDataSource,
   });
   @override
-  Future<Either<Failure, List<BookEntity>>> fetchFeaturedBooks() async {
+  Future<Either<Failure, List<BookEntity>>> fetchFeaturedBooks({
+    int? pageNumber = 0,
+  }) async {
     try {
       List<BookEntity> books;
 
-      books = homeLocalDataSource.fetchFeaturedBooks();
+      // Only check local cache for the first page
+      if (pageNumber == 0) {
+        books = homeLocalDataSource.fetchFeaturedBooks(pageNumber: pageNumber);
 
-      if (books.isNotEmpty) {
-        return right(books);
+        if (books.isNotEmpty) {
+          return right(books);
+        }
       }
 
-      books = await homeRemoteDataSource.fetchFeaturedBooks();
+      // Fetch from remote for first page (if cache empty) or any subsequent page
+      books = await homeRemoteDataSource.fetchFeaturedBooks(
+        pageNumber: pageNumber,
+      );
 
       return right(books);
     } on DioException catch (e) {
       return left(ServerFailure.fromDioError(e));
+    } catch (e) {
+      return left(ServerFailure('Unexpected error: ${e.toString()}'));
     }
   }
 
@@ -49,6 +59,8 @@ class HomeRepoImpl extends HomeRepo {
       return right(books);
     } on DioException catch (e) {
       return left(ServerFailure.fromDioError(e));
+    } catch (e) {
+      return left(ServerFailure('Unexpected error: ${e.toString()}'));
     }
   }
 }

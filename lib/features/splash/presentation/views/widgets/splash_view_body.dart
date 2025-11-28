@@ -1,7 +1,6 @@
 import 'package:bookly/core/utils/app_router.dart';
 import 'package:bookly/core/utils/assets.dart';
 import 'package:flutter/material.dart';
-import 'package:bookly/features/splash/presentation/views/widgets/sliding_text.dart';
 import 'package:go_router/go_router.dart';
 
 class SplashViewBody extends StatefulWidget {
@@ -14,34 +13,48 @@ class SplashViewBody extends StatefulWidget {
 class _SplashViewBodyState extends State<SplashViewBody>
     with SingleTickerProviderStateMixin {
   late AnimationController animationController;
-  late Animation<Offset> slidingAnimation;
+  late Animation<double> fadeAnimation;
+  late Animation<double> scaleAnimation;
+  late Animation<Offset> slideAnimation;
 
   @override
   void initState() {
     super.initState();
 
-    initSlidingAnimation();
+    initAnimations();
     navigateToHome();
   }
 
-  void initSlidingAnimation() {
+  void initAnimations() {
     animationController = AnimationController(
       vsync: this,
-      duration: const Duration(seconds: 1),
+      duration: const Duration(milliseconds: 1500),
     );
 
-    slidingAnimation = Tween<Offset>(
-      begin: const Offset(0, 2),
-      end: Offset.zero,
-    ).animate(animationController);
+    fadeAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
+      CurvedAnimation(parent: animationController, curve: Curves.easeIn),
+    );
+
+    scaleAnimation = Tween<double>(begin: 0.8, end: 1.0).animate(
+      CurvedAnimation(parent: animationController, curve: Curves.easeOutBack),
+    );
+
+    slideAnimation = Tween<Offset>(begin: const Offset(0, 2), end: Offset.zero)
+        .animate(
+          CurvedAnimation(
+            parent: animationController,
+            curve: Curves.easeOutQuart,
+          ),
+        );
 
     animationController.forward();
   }
 
   void navigateToHome() {
     Future.delayed(const Duration(seconds: 3), () {
-      // ignore: use_build_context_synchronously
-      GoRouter.of(context).push(AppRouter.kHomeView);
+      if (mounted) {
+        GoRouter.of(context).pushReplacement(AppRouter.kHomeView);
+      }
     });
   }
 
@@ -53,13 +66,63 @@ class _SplashViewBodyState extends State<SplashViewBody>
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        Image.asset(AssetsData.logo),
-        SlidingText(slidingAnimation: slidingAnimation),
-      ],
+    return Container(
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          colors: [
+            const Color(0xFF1a0b2e),
+            const Color(0xFF2D1599).withOpacity(0.8),
+            const Color(0xFF14006F),
+          ],
+          stops: const [0.0, 0.5, 1.0],
+        ),
+      ),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          ScaleTransition(
+            scale: scaleAnimation,
+            child: FadeTransition(
+              opacity: fadeAnimation,
+              child: Image.asset(AssetsData.logo, height: 80),
+            ),
+          ),
+          const SizedBox(height: 16),
+          SlideTransition(
+            position: slideAnimation,
+            child: FadeTransition(
+              opacity: fadeAnimation,
+              child: Column(
+                children: [
+                  const Text(
+                    'Read Free Books',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                      letterSpacing: 1.2,
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    'Discover your next adventure',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      color: Colors.white.withOpacity(0.6),
+                      fontSize: 14,
+                      letterSpacing: 0.5,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

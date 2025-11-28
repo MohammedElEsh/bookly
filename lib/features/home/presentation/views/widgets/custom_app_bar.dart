@@ -10,22 +10,61 @@ class CustomAppBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 32.0),
-
+      padding: const EdgeInsets.fromLTRB(24.0, 48.0, 24.0, 24.0),
       child: Row(
         children: [
-          Image.asset(AssetsData.logo, height: 64),
+          // Logo with glow effect
+          Container(
+            padding: const EdgeInsets.all(8),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(12),
+              boxShadow: [
+                BoxShadow(
+                  color: const Color(0xFF2D1599).withOpacity(0.3),
+                  blurRadius: 20,
+                  spreadRadius: 2,
+                ),
+              ],
+            ),
+            child: Image.asset(AssetsData.logo, height: 48),
+          ),
 
           const Spacer(),
 
-          IconButton(
-            onPressed: () {
-              GoRouter.of(context).push(AppRouter.kSearchView);
-            },
-            icon: const Icon(
-              FontAwesomeIcons.magnifyingGlass,
-              size: 24,
-              color: Colors.white,
+          // Search button with gradient
+          Container(
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                colors: [
+                  const Color(0xFF4FACFE).withOpacity(0.8),
+                  const Color(0xFF00F2FE).withOpacity(0.8),
+                ],
+              ),
+              borderRadius: BorderRadius.circular(12),
+              boxShadow: [
+                BoxShadow(
+                  color: const Color(0xFF4FACFE).withOpacity(0.3),
+                  blurRadius: 12,
+                  offset: const Offset(0, 4),
+                ),
+              ],
+            ),
+            child: Material(
+              color: Colors.transparent,
+              child: InkWell(
+                onTap: () {
+                  GoRouter.of(context).push(AppRouter.kSearchView);
+                },
+                borderRadius: BorderRadius.circular(12),
+                child: Container(
+                  padding: const EdgeInsets.all(12),
+                  child: const Icon(
+                    FontAwesomeIcons.magnifyingGlass,
+                    size: 20,
+                    color: Colors.white,
+                  ),
+                ),
+              ),
             ),
           ),
         ],

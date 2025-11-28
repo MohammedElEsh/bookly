@@ -4,7 +4,7 @@ import '../../../domain/entities/book_entity.dart';
 
 abstract class HomeLocalDataSource {
   List<BookEntity> fetchFeaturedBooks({int? pageNumber = 0});
-  List<BookEntity> fetchNewestBooks();
+  List<BookEntity> fetchNewestBooks({int? pageNumber = 0});
 }
 
 class HomeLocalDataSourceImpl extends HomeLocalDataSource {
@@ -32,8 +32,25 @@ class HomeLocalDataSourceImpl extends HomeLocalDataSource {
   }
 
   @override
-  List<BookEntity> fetchNewestBooks() {
+  List<BookEntity> fetchNewestBooks({int? pageNumber = 0}) {
+    const int pageSize = 10;
     var box = Hive.box<BookEntity>(kNewestBox);
-    return box.values.toList();
+
+    int startIndex = (pageNumber ?? 0) * pageSize;
+    int endIndex = startIndex + pageSize;
+
+    List<BookEntity> allBooks = box.values.toList();
+
+    // Return empty list if startIndex is beyond available books
+    if (startIndex >= allBooks.length) {
+      return [];
+    }
+
+    // Adjust endIndex if it exceeds the list length
+    if (endIndex > allBooks.length) {
+      endIndex = allBooks.length;
+    }
+
+    return allBooks.sublist(startIndex, endIndex);
   }
 }

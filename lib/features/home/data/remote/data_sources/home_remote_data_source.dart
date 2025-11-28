@@ -6,7 +6,7 @@ import '../../../domain/entities/book_entity.dart';
 
 abstract class HomeRemoteDataSource {
   Future<List<BookEntity>> fetchFeaturedBooks({int? pageNumber = 0});
-  Future<List<BookEntity>> fetchNewestBooks();
+  Future<List<BookEntity>> fetchNewestBooks({int? pageNumber = 0});
 }
 
 class HomeRemoteDataSourceImpl extends HomeRemoteDataSource {
@@ -36,13 +36,21 @@ class HomeRemoteDataSourceImpl extends HomeRemoteDataSource {
   }
 
   @override
-  Future<List<BookEntity>> fetchNewestBooks() async {
+  Future<List<BookEntity>> fetchNewestBooks({int? pageNumber = 0}) async {
     var data = await apiService.get(
-      endpoint: 'volumes?filter=free-ebooks&orderBy=newest&q=programming',
+      endpoint:
+          'volumes?filter=free-ebooks&orderBy=newest&q=programming&startIndex=${pageNumber! * 10}',
     );
 
     List<BookEntity> books = getBooksList(data);
-    saveBooksData(books, kNewestBox);
+
+    // Use different save strategies based on page number
+    if (pageNumber == 0) {
+      saveBooksData(books, kNewestBox); // Clear and save for first page
+    } else {
+      saveBooksDataPaginated(books, kNewestBox); // Append for subsequent pages
+    }
+
     return books;
   }
 

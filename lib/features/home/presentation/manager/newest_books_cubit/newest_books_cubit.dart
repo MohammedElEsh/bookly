@@ -10,16 +10,45 @@ class NewestBooksCubit extends Cubit<NewestBooksState> {
   NewestBooksCubit(this.fetchNewestBooksUseCase) : super(NewestBooksInitial());
 
   final FetchNewestBooksUseCase fetchNewestBooksUseCase;
+  int _currentPage = 0;
 
-  Future<void> getNewestBooks() async {
-    emit(NewestBooksLoading());
+  Future<void> getNewestBooks({int pageNumber = 0}) async {
+    if (pageNumber == 0) {
+      emit(NewestBooksLoading());
+    } else {
+      emit(
+        NewestBooksPaginationLoading(
+          state is NewestBooksSuccess
+              ? (state as NewestBooksSuccess).books
+              : [],
+        ),
+      );
+    }
 
-    var result = await fetchNewestBooksUseCase.call();
+    var result = await fetchNewestBooksUseCase.call(pageNumber);
 
-    result.fold((failure) {
-      emit(NewestBooksFailure(failure.errMessage));
-    }, (books) {
-      emit(NewestBooksSuccess(books));
-    });
+    result.fold(
+      (failure) {
+        emit(NewestBooksFailure(failure.errMessage));
+      },
+      (books) {
+        if (pageNumber == 0) {
+          _currentPage = 0;
+          emit(NewestBooksSuccess(books));
+        } else {
+          _currentPage = pageNumber;
+          final currentBooks = state is NewestBooksSuccess
+              ? (state as NewestBooksSuccess).books
+              : (state is NewestBooksPaginationLoading
+                    ? (state as NewestBooksPaginationLoading).books
+                    : <BookEntity>[]);
+          emit(NewestBooksSuccess([...currentBooks, ...books]));
+        }
+      },
+    );
+  }
+
+  Future<void> fetchNextPage() async {
+    await getNewestBooks(pageNumber: _currentPage + 1);
   }
 }

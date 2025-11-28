@@ -1,4 +1,5 @@
 import 'package:bookly/core/utils/styles.dart';
+import 'package:bookly/features/home/domain/entities/book_entity.dart';
 import 'package:bookly/features/home/presentation/views/widgets/best_seller_list_view_item.dart';
 import 'package:flutter/material.dart';
 import 'custom_search_text_field.dart';
@@ -29,14 +30,23 @@ class SearchResultListView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // TODO: Replace with actual search results
+    final dummyBook = BookEntity(
+      bookId: '1',
+      title: 'Search for books',
+      image: '',
+      authorName: 'No results yet',
+      rating: 0,
+    );
+
     return ListView.builder(
       physics: const BouncingScrollPhysics(),
       padding: EdgeInsets.zero,
-      itemCount: 10,
+      itemCount: 1,
       itemBuilder: (context, index) {
-        return const Padding(
-          padding: EdgeInsets.symmetric(vertical: 10.0),
-          child: BestSellerListViewItem(),
+        return Padding(
+          padding: const EdgeInsets.symmetric(vertical: 10.0),
+          child: BestSellerListViewItem(book: dummyBook),
         );
       },
     );

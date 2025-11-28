@@ -44,17 +44,25 @@ class HomeRepoImpl extends HomeRepo {
   }
 
   @override
-  Future<Either<Failure, List<BookEntity>>> fetchNewestBooks() async {
+  Future<Either<Failure, List<BookEntity>>> fetchNewestBooks({
+    int? pageNumber = 0,
+  }) async {
     try {
       List<BookEntity> books;
 
-      books = homeLocalDataSource.fetchNewestBooks();
+      // Only check local cache for the first page
+      if (pageNumber == 0) {
+        books = homeLocalDataSource.fetchNewestBooks(pageNumber: pageNumber);
 
-      if (books.isNotEmpty) {
-        return right(books);
+        if (books.isNotEmpty) {
+          return right(books);
+        }
       }
 
-      books = await homeRemoteDataSource.fetchNewestBooks();
+      // Fetch from remote for first page (if cache empty) or any subsequent page
+      books = await homeRemoteDataSource.fetchNewestBooks(
+        pageNumber: pageNumber,
+      );
 
       return right(books);
     } on DioException catch (e) {

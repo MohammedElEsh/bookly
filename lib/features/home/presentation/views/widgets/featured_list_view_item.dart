@@ -1,3 +1,4 @@
+import 'package:bookly/features/home/domain/entities/book_entity.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -5,15 +6,15 @@ import 'package:go_router/go_router.dart';
 import '../../../../../core/utils/app_router.dart';
 
 class FeaturedListViewItem extends StatelessWidget {
-  const FeaturedListViewItem({super.key, required this.image});
+  const FeaturedListViewItem({super.key, required this.book});
 
-  final String image;
+  final BookEntity book;
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        GoRouter.of(context).push(AppRouter.kBookDetailsView);
+        GoRouter.of(context).push(AppRouter.kBookDetailsView, extra: book);
       },
       child: AspectRatio(
         aspectRatio: 2.6 / 4,
@@ -41,7 +42,7 @@ class FeaturedListViewItem extends StatelessWidget {
               fit: StackFit.expand,
               children: [
                 CachedNetworkImage(
-                  imageUrl: image,
+                  imageUrl: book.image ?? '',
                   fit: BoxFit.cover,
                   placeholder: (context, url) => Container(
                     decoration: BoxDecoration(
@@ -72,7 +73,11 @@ class FeaturedListViewItem extends StatelessWidget {
                         ],
                       ),
                     ),
-                    child: const Icon(Icons.book, color: Colors.white, size: 48),
+                    child: const Icon(
+                      Icons.book,
+                      color: Colors.white,
+                      size: 48,
+                    ),
                   ),
                 ),
                 // Gradient overlay for better text readability
@@ -81,7 +86,10 @@ class FeaturedListViewItem extends StatelessWidget {
                     gradient: LinearGradient(
                       begin: Alignment.topCenter,
                       end: Alignment.bottomCenter,
-                      colors: [Colors.transparent, Colors.black.withOpacity(0.3)],
+                      colors: [
+                        Colors.transparent,
+                        Colors.black.withOpacity(0.3),
+                      ],
                       stops: const [0.6, 1.0],
                     ),
                   ),

@@ -29,6 +29,7 @@ class BookModel extends BookEntity {
              : 'Unknown Author',
          price: 0.0,
          rating: volumeInfo?.averageRating ?? 0.0,
+         category: volumeInfo?.categories?.first ?? 'Programming',
        );
 
   factory BookModel.fromJson(Map<String, dynamic> json) => BookModel(
